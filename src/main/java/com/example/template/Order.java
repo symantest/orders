@@ -45,21 +45,34 @@ public class Order {
         }
 
         // 1. 주문에 대한 상품 조회 - API
-        String productUrl = env.getProperty("productUrl") + "/products/" + productId;
-
-        ResponseEntity<String> productEntity = restTemplate.getForEntity(productUrl, String.class);
-        System.out.println(productEntity.getStatusCode());
-        System.out.println(productEntity.getBody());
-
-        JsonParser parser = new JsonParser();
-        JsonObject jsonObject = parser.parse(productEntity.getBody()).getAsJsonObject();
+//        String productUrl = env.getProperty("productUrl") + "/products/" + productId;
+//
+//        ResponseEntity<String> productEntity = restTemplate.getForEntity(productUrl, String.class);
+//        System.out.println(productEntity.getStatusCode());
+//        System.out.println(productEntity.getBody());
+//
+//        JsonParser parser = new JsonParser();
+//        JsonObject jsonObject = parser.parse(productEntity.getBody()).getAsJsonObject();
+//
+//        OrderPlaced orderPlaced = new OrderPlaced();
+//        try {
+//            orderPlaced.setOrderId(id);
+//
+//            this.setPrice(jsonObject.get("price").getAsInt());
+//            this.setProductName(jsonObject.get("name").getAsString());
+//
+//            BeanUtils.copyProperties(this, orderPlaced);
+//            json = objectMapper.writeValueAsString(orderPlaced);
+//        } catch (JsonProcessingException e) {
+//            throw new RuntimeException("JSON format exception", e);
+//        }
 
         OrderPlaced orderPlaced = new OrderPlaced();
         try {
             orderPlaced.setOrderId(id);
 
-            this.setPrice(jsonObject.get("price").getAsInt());
-            this.setProductName(jsonObject.get("name").getAsString());
+            this.setPrice(1000);
+            this.setProductName("TV");
 
             BeanUtils.copyProperties(this, orderPlaced);
             json = objectMapper.writeValueAsString(orderPlaced);
