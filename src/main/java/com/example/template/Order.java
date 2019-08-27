@@ -44,9 +44,9 @@ public class Order {
             throw new RuntimeException();
         }
 
+        // 1. 주문에 대한 상품 조회 - API
         String productUrl = env.getProperty("productUrl") + "/products/" + productId;
 
-        // 1. checkInventory
         ResponseEntity<String> productEntity = restTemplate.getForEntity(productUrl, String.class);
         System.out.println(productEntity.getStatusCode());
         System.out.println(productEntity.getBody());
@@ -67,6 +67,7 @@ public class Order {
             throw new RuntimeException("JSON format exception", e);
         }
 
+        // 2. 주문이 발생함 이벤트 발송
         ProducerRecord producerRecord = new ProducerRecord<>("eventTopic", json);
         kafkaTemplate.send(producerRecord);
     }
