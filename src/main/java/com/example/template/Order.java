@@ -81,7 +81,8 @@ public class Order {
         }
 
         // 2. 주문이 발생함 이벤트 발송
-        ProducerRecord producerRecord = new ProducerRecord<>("eventTopic", json);
+        String topicName = env.getProperty("eventTopic");
+        ProducerRecord producerRecord = new ProducerRecord<>(topicName, json);
         kafkaTemplate.send(producerRecord);
     }
 
