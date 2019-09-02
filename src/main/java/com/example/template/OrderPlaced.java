@@ -2,9 +2,8 @@ package com.example.template;
 
 import java.io.Serializable;
 
-public class OrderPlaced implements Serializable {
+public class OrderPlaced extends AbstractEvent{
 
-    private String type;
     private String stateMessage = "주문이 발생함";
 
     private Long productId;
@@ -16,15 +15,7 @@ public class OrderPlaced implements Serializable {
     private String customerAddr;
 
     public OrderPlaced(){
-        this.setType(this.getClass().getSimpleName());
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+        this.setEventType(this.getClass().getSimpleName());
     }
 
     public String getStateMessage() {
