@@ -13,6 +13,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity
 @Table(name = "order_table")
@@ -25,6 +26,7 @@ public class Order {
     private String productName;
     private int quantity;
     private int price;
+    private String customerId;
     private String customerName;
     private String customerAddr;
 
@@ -45,35 +47,29 @@ public class Order {
         }
 
         // 1. 주문에 대한 상품 조회 - API
-//        String productUrl = env.getProperty("productUrl") + "/products/" + productId;
-//
-//        ResponseEntity<String> productEntity = restTemplate.getForEntity(productUrl, String.class);
-//        System.out.println(productEntity.getStatusCode());
-//        System.out.println(productEntity.getBody());
-//
-//        JsonParser parser = new JsonParser();
-//        JsonObject jsonObject = parser.parse(productEntity.getBody()).getAsJsonObject();
-//
-//        OrderPlaced orderPlaced = new OrderPlaced();
-//        try {
-//            orderPlaced.setOrderId(id);
-//
-//            this.setPrice(jsonObject.get("price").getAsInt());
-//            this.setProductName(jsonObject.get("name").getAsString());
-//
-//            BeanUtils.copyProperties(this, orderPlaced);
-//            json = objectMapper.writeValueAsString(orderPlaced);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException("JSON format exception", e);
-//        }
+        if( env.getProperty("useRest") != null && "true".equals(env.getProperty("useRest").toLowerCase())){
+            String productUrl = env.getProperty("productUrl") + "/products/" + productId;
+
+            ResponseEntity<String> productEntity = restTemplate.getForEntity(productUrl, String.class);
+            JsonParser parser = new JsonParser();
+            JsonObject jsonObject = parser.parse(productEntity.getBody()).getAsJsonObject();
+
+            this.setPrice(jsonObject.get("price").getAsInt());
+            this.setProductName(jsonObject.get("name").getAsString());
+
+        }else{
+        // 2. 자체 DB 조회
+            ProductRepository productRepository = Application.applicationContext.getBean(ProductRepository.class);
+            Optional<Product> productOptional = productRepository.findById(productId);
+            Product product = productOptional.get();
+
+            this.setPrice(product.getPrice());
+            this.setProductName(product.getName());
+        }
 
         OrderPlaced orderPlaced = new OrderPlaced();
         try {
             orderPlaced.setOrderId(id);
-
-            this.setPrice(1000);
-            this.setProductName("TV");
-
             BeanUtils.copyProperties(this, orderPlaced);
             json = objectMapper.writeValueAsString(orderPlaced);
         } catch (JsonProcessingException e) {
@@ -116,6 +112,14 @@ public class Order {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     public String getCustomerName() {

@@ -3,7 +3,7 @@ server:
 
 
 eventTopic: eventTopic
-
+useRest : false
 ---
 spring:
   profiles: default
