@@ -1,6 +1,8 @@
 package com.example.template;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class OrderPlaced extends AbstractEvent{
 
@@ -16,6 +18,8 @@ public class OrderPlaced extends AbstractEvent{
 
     public OrderPlaced(){
         this.setEventType(this.getClass().getSimpleName());
+        SimpleDateFormat defaultSimpleDateFormat = new SimpleDateFormat("YYYYMMddHHmmss");
+        this.timestamp = defaultSimpleDateFormat.format(new Date());
     }
 
     public String getStateMessage() {
