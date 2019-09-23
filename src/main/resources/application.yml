@@ -35,6 +35,6 @@ spring:
     consumer:
       enable-auto-commit: true
 
-productUrl: http://product:8080
+productUrl: http://products:8080
 
 eventTopic: eventTopicDocker
