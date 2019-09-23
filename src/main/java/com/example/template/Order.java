@@ -47,24 +47,17 @@ public class Order {
         }
 
         // 1. 주문에 대한 상품 조회 - API
-        if( env.getProperty("useRest") != null && "true".equals(env.getProperty("useRest").toLowerCase())){
-            String productUrl = env.getProperty("productUrl") + "/products/" + productId;
+        String productUrl = env.getProperty("productUrl") + "/products/" + productId;
 
-            ResponseEntity<String> productEntity = restTemplate.getForEntity(productUrl, String.class);
-            JsonParser parser = new JsonParser();
-            JsonObject jsonObject = parser.parse(productEntity.getBody()).getAsJsonObject();
+        ResponseEntity<String> productEntity = restTemplate.getForEntity(productUrl, String.class);
+        JsonParser parser = new JsonParser();
+        JsonObject jsonObject = parser.parse(productEntity.getBody()).getAsJsonObject();
 
-            this.setPrice(jsonObject.get("price").getAsInt());
-            this.setProductName(jsonObject.get("name").getAsString());
+        this.setPrice(jsonObject.get("price").getAsInt());
+        this.setProductName(jsonObject.get("name").getAsString());
 
-        }else{
-        // 2. 자체 DB 조회
-            ProductRepository productRepository = Application.applicationContext.getBean(ProductRepository.class);
-            Optional<Product> productOptional = productRepository.findById(productId);
-            Product product = productOptional.get();
-
-            this.setPrice(product.getPrice());
-            this.setProductName(product.getName());
+        if( jsonObject.get("stock").getAsInt() < getQuantity()){
+            throw new RuntimeException("No Available stock!");
         }
 
         OrderPlaced orderPlaced = new OrderPlaced();

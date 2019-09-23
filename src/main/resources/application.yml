@@ -3,13 +3,12 @@ server:
 
 
 eventTopic: eventTopic
-useRest : false
 ---
 spring:
   profiles: default
   kafka:
-    bootstrap-servers: http://35.200.47.242:31090
-#    bootstrap-servers: localhost:9092
+#    bootstrap-servers: http://35.200.47.242:31090
+    bootstrap-servers: localhost:9092
     consumer:
       enable-auto-commit: true
   jpa:
@@ -36,6 +35,6 @@ spring:
     consumer:
       enable-auto-commit: true
 
-productUrl: http://product:8085
+productUrl: http://product:8080
 
 eventTopic: eventTopicDocker
