@@ -46,18 +46,20 @@ public class Order {
             throw new RuntimeException();
         }
 
-        // 1. 주문에 대한 상품 조회 - API
-        String productUrl = env.getProperty("productUrl") + "/products/" + productId;
+        if("true".equalsIgnoreCase(env.getProperty("checkStock"))){
+            // 1. 주문에 대한 상품 조회 - API
+            String productUrl = env.getProperty("productUrl") + "/products/" + productId;
 
-        ResponseEntity<String> productEntity = restTemplate.getForEntity(productUrl, String.class);
-        JsonParser parser = new JsonParser();
-        JsonObject jsonObject = parser.parse(productEntity.getBody()).getAsJsonObject();
+            ResponseEntity<String> productEntity = restTemplate.getForEntity(productUrl, String.class);
+            JsonParser parser = new JsonParser();
+            JsonObject jsonObject = parser.parse(productEntity.getBody()).getAsJsonObject();
 
-        this.setPrice(jsonObject.get("price").getAsInt());
-        this.setProductName(jsonObject.get("name").getAsString());
+            this.setPrice(jsonObject.get("price").getAsInt());
+            this.setProductName(jsonObject.get("name").getAsString());
 
-        if( jsonObject.get("stock").getAsInt() < getQuantity()){
-            throw new RuntimeException("No Available stock!");
+            if( jsonObject.get("stock").getAsInt() < getQuantity()){
+                throw new RuntimeException("No Available stock!");
+            }
         }
 
         OrderPlaced orderPlaced = new OrderPlaced();

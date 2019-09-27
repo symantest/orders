@@ -3,6 +3,10 @@ server:
 
 
 eventTopic: eventTopic
+
+## 주문은 product 정보가 필요하다.
+## checkStock 를 true 로 준다면, product 서비스가 죽어있을때는 주문이 안된다.
+checkStock: false
 ---
 spring:
   profiles: default
